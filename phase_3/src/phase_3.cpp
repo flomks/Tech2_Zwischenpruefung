@@ -37,6 +37,7 @@ State currentState = ALL_RED;
 bool PED_NEXT = false;          // Button pressed
 bool PED_BUTTON_ENABLED = true; // To make sure, that the button is only active during the car phases and not during the pedestrian phases
 bool CAR_PHASE_OVER = true;     // To make sure, that there are not multiple PED Phases in a row without a car phase in between
+bool LAST_BUTTON_STATE = HIGH;
 
 unsigned long lastStateChange = 0;
 
@@ -163,8 +164,12 @@ void nextState()
         break;
 
     case A_GREEN:
-        currentState = A_YELLOW;
-        CAR_PHASE_OVER = true;
+        if (PED_NEXT)
+        {
+            currentState = A_YELLOW;
+            CAR_PHASE_OVER = true;
+        }
+
         break;
 
     case A_YELLOW:
@@ -202,7 +207,9 @@ void phase3Setup()
 
 void phase3Loop()
 {
-    if (digitalRead(A_BUTTON) == LOW && PED_BUTTON_ENABLED)
+    bool buttonState = digitalRead(A_BUTTON);
+
+    if (LAST_BUTTON_STATE == HIGH && buttonState == LOW && PED_BUTTON_ENABLED)
     {
         PED_NEXT = true;
     }

@@ -1,18 +1,13 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+const int TL_A_G = 26;
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+void setup()
+{
+  pinMode(TL_A_G, OUTPUT);
+  digitalWrite(TL_A_G, LOW);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
 }
