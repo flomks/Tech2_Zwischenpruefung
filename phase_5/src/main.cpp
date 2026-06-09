@@ -1,13 +1,12 @@
 #include <Arduino.h>
-
-const int TL_A_G = 26;
+#include "phase_5.h"
 
 void setup()
 {
-  pinMode(TL_A_G, OUTPUT);
-  digitalWrite(TL_A_G, LOW);
+  phase5Setup();
 }
 
 void loop()
 {
+  phase5Loop();
 }
