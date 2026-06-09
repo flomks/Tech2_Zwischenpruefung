@@ -5,8 +5,6 @@ const int A_R = 18;
 const int A_Y = 19;
 const int A_G = 21;
 
-const int A_BUTTON = 32;
-
 const int TL_A_R = 25;
 const int TL_A_G = 26;
 
@@ -34,9 +32,7 @@ enum State
 // State currentState = A_RED;
 State currentState = ALL_RED;
 
-bool PED_NEXT = false;          // Button pressed
-bool PED_BUTTON_ENABLED = true; // To make sure, that the button is only active during the car phases and not during the pedestrian phases
-bool CAR_PHASE_OVER = true;     // To make sure, that there are not multiple PED Phases in a row without a car phase in between
+bool PED_NEXT = false;
 
 unsigned long lastStateChange = 0;
 
@@ -144,17 +140,15 @@ void nextState()
         */
 
     case ALL_RED:
-        if (PED_NEXT && CAR_PHASE_OVER)
+        if (PED_NEXT)
         {
             currentState = TL_A_GREEN;
             PED_NEXT = false;
-            PED_BUTTON_ENABLED = false;
-            CAR_PHASE_OVER = false;
         }
         else
         {
             currentState = A_RED_YELLOW;
-            PED_BUTTON_ENABLED = true;
+            PED_NEXT = true;
         }
         break;
 
@@ -164,12 +158,10 @@ void nextState()
 
     case A_GREEN:
         currentState = A_YELLOW;
-        CAR_PHASE_OVER = true;
         break;
 
     case A_YELLOW:
         currentState = ALL_RED;
-        PED_BUTTON_ENABLED = true;
         break;
 
         /*
@@ -180,12 +172,11 @@ void nextState()
 
     case TL_A_GREEN:
         currentState = ALL_RED;
-        PED_BUTTON_ENABLED = true;
         break;
     }
 }
 
-void phase3Setup()
+void phase2Setup()
 {
     pinMode(A_R, OUTPUT);
     pinMode(A_Y, OUTPUT);
@@ -194,19 +185,12 @@ void phase3Setup()
     pinMode(TL_A_R, OUTPUT);
     pinMode(TL_A_G, OUTPUT);
 
-    pinMode(A_BUTTON, INPUT_PULLUP);
-
     lastStateChange = millis();
     currentLedOn();
 }
 
-void phase3Loop()
+void phase2Loop()
 {
-    if (digitalRead(A_BUTTON) == LOW && PED_BUTTON_ENABLED)
-    {
-        PED_NEXT = true;
-    }
-
     if (millis() - lastStateChange >= getCurrentStateDuration())
     {
         nextState();
